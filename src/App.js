@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import Articles from './Pages/Articles';
+import axios from 'axios';
 
-function App() {
+const App = () => {
+  const [loading, setLoading] = useState(false);
+  const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    const getArticles = async () => {
+      setLoading(true);
+      console.log(process.env.REACT_APP_NYTIMES_API_KEY);
+      const res = await axios.get(` https://api.nytimes.com/svc/search/v2/articlesearch.json?fq=section_name:("Arts")&sort=newest&api-key=3BMXXRAfz781hnuSmKjvTWfOKGqmU7FO`);
+      setArticles(res.data.response.docs);
+
+      setLoading(false);
+    };
+    getArticles();
+
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div>
+      <Articles loading={loading} articles={articles} />
+    </div >
   );
-}
+};
 
 export default App;
